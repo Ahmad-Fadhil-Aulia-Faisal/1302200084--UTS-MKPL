@@ -76,20 +76,21 @@ public class Employee {
 		this.spouseIdNumber = idNumber;
 	}
 	
-	public void addChild(String childName, String childIdNumber) {
-		childNames.add(childName);
-		childIdNumbers.add(childIdNumber);
+	public void addChild(Child child) {
+		children.add(child);
 	}
 	
 	public int getAnnualIncomeTax() {
-		LocalDate date = LocalDate.now();
-		
-		if (date.getYear() == yearJoined) {
-			monthWorkingInYear = date.getMonthValue() - monthJoined;
-		}else {
-			monthWorkingInYear = 12;
-		}
-		
-		return TaxFunction.calculateTax(monthlySalary, otherMonthlyIncome, monthWorkingInYear, annualDeductible, spouseIdNumber.equals(""), childIdNumbers.size());
+		int monthsWorkedThisYear = calculateMonthsWorkedThisYear();
+        return TaxFunction.calculateTax(monthlySalary, otherMonthlyIncome, monthsWorkedThisYear, annualDeductible, spouseIdNumber.equals(""), children.size());
 	}
+
+	private int calculateMonthsWorkedThisYear() {
+        LocalDate currentDate = LocalDate.now();
+        if (currentDate.getYear() == joinedDate.getYear()) {
+            return currentDate.getMonthValue() - joinedDate.getMonthValue();
+        } else {
+            return 12;
+        }
+    }
 }
